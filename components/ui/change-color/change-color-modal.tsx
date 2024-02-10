@@ -7,7 +7,7 @@ const ChangeColorModal = () => {
 
   useEffect(() => {
 
-    const test = window.DOMMatrix || window.WebKitCSSMatrix 
+    const test = window.DOMMatrix
     console.log(test); 
   })
 
