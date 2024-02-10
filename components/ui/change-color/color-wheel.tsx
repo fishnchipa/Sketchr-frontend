@@ -324,8 +324,7 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
 
   return (
     <>
-      <div className="flex justify-center items-center relative">
-        <canvas 
+      <canvas 
           ref={wheelRef} 
           width={size}
           height={size} 
@@ -350,7 +349,6 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
           ref={svRef}
           style={{width: thickness, height: thickness}}
         ></div>
-      </div>
     </>
  
   )

@@ -17,9 +17,7 @@ export default function Home() {
           thickness={26}
         /> 
     </div>
-    <div className="">
-
-    </div>
+   
     </>
   );
 }
