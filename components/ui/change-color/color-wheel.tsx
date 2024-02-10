@@ -140,8 +140,9 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
     const x1 = e.clientX;
     const y1 = e.clientY;
     
-    const centerX = e.currentTarget.offsetLeft + (e.currentTarget.offsetWidth / 2 );
-    const centerY = e.currentTarget.offsetTop + (e.currentTarget.offsetHeight / 2);
+    const bounds = e.currentTarget.getBoundingClientRect()
+    const centerX = bounds.x + (e.currentTarget.offsetWidth / 2 );
+    const centerY = bounds.y + (e.currentTarget.offsetHeight / 2);
    
     const inSquare = inSV(x1, y1, centerX, centerY);
 
@@ -164,13 +165,14 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
     e.preventDefault();
     const x1 = e.clientX;
     const y1 = e.clientY;
-    
-    const centerX = e.currentTarget.offsetLeft + (e.currentTarget.offsetWidth / 2 );
-    const centerY = e.currentTarget.offsetTop + (e.currentTarget.offsetHeight / 2);
+    const bounds = e.currentTarget.getBoundingClientRect()
+    const centerX = bounds.x + (e.currentTarget.offsetWidth / 2 );
+    const centerY = bounds.y + (e.currentTarget.offsetHeight / 2);
     
     const square = inSV(x1, y1, centerX, centerY);
-    
+
     if (pressedHue) {
+     
       const a = centerX;
       const b = centerY;     
 
@@ -204,9 +206,8 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
       const hue = hueRef.current;
       if (hue) {
         calculateHue(x, y, centerX, centerY);
-  
-        hue.style.left = (x - (thickness / 2)) + "px";
-        hue.style.top = (y - (thickness / 2)) + "px";
+        hue.style.left = (x - (thickness / 2) - bounds.x) + "px";
+        hue.style.top = (y - (thickness / 2) - bounds.y) + "px";
       }
 
     } else if (pressedSV) {
@@ -214,48 +215,48 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
       const sv = svRef.current;
       if (sv) {
         if (x1 > square.right &&  y1 > square.bottom) {
-          sv.style.left = (square.right - (thickness / 2)) + "px";
-          sv.style.top = (square.bottom - (thickness / 2)) + "px";
+          sv.style.left = (square.right - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (square.bottom - (thickness / 2) - bounds.y) + "px";
           calculateSV(square.right, square.bottom, square);
 
         } else if (x1 > square.right &&  y1 < square.top) {
-          sv.style.left = (square.right - (thickness / 2)) + "px";
-          sv.style.top = (square.top - (thickness / 2)) + "px";
+          sv.style.left = (square.right - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (square.top - (thickness / 2) - bounds.y) + "px";
           calculateSV(square.right, square.top, square);
 
         } else if (x1 < square.left &&  y1 < square.top) {
-          sv.style.left = (square.left - (thickness / 2)) + "px";
-          sv.style.top = (square.top - (thickness / 2)) + "px";
+          sv.style.left = (square.left - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (square.top - (thickness / 2) - bounds.y) + "px";
           calculateSV(square.left, square.top, square);
 
         } else if (x1 < square.left && y1 > square.bottom) {
-          sv.style.left = (square.left - (thickness / 2)) + "px";
-          sv.style.top = (square.bottom - (thickness / 2)) + "px";
+          sv.style.left = (square.left - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (square.bottom - (thickness / 2) - bounds.y) + "px";
           calculateSV(square.left, square.bottom, square);
 
         } else if (x1 > square.right) {
-          sv.style.left = (square.right - (thickness / 2)) + "px";
-          sv.style.top = (y1 - (thickness / 2)) + "px";
+          sv.style.left = (square.right - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (y1 - (thickness / 2) - bounds.y) + "px";
           calculateSV(square.right, y1, square);
 
         } else if (x1 < square.left) {
-          sv.style.left = (square.left - (thickness / 2)) + "px";
-          sv.style.top = (y1 - (thickness / 2)) + "px";
+          sv.style.left = (square.left - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (y1 - (thickness / 2) - bounds.y) + "px";
           calculateSV(square.left, y1, square);
 
         } else if (y1 > square.bottom) {
-          sv.style.left = (x1 - (thickness / 2)) + "px";
-          sv.style.top = (square.bottom - (thickness / 2)) + "px";
+          sv.style.left = (x1 - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (square.bottom - (thickness / 2) - bounds.y) + "px";
           calculateSV(x1, square.bottom, square);
 
         } else if (y1 < square.top) {
-          sv.style.left = (x1 - (thickness / 2)) + "px";
-          sv.style.top = (square.top - (thickness / 2)) + "px";
+          sv.style.left = (x1 - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (square.top - (thickness / 2) - bounds.y) + "px";
           calculateSV(x1, square.top, square);
 
         } else {
-          sv.style.left = (x1 - (thickness / 2)) + "px";
-          sv.style.top = (y1 - (thickness / 2)) + "px";
+          sv.style.left = (x1 - (thickness / 2) - bounds.x) + "px";
+          sv.style.top = (y1 - (thickness / 2) - bounds.y) + "px";
           calculateSV(x1, y1, square);
 
         }
@@ -323,7 +324,7 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
   }
 
   return (
-    <>
+    <div className="flex justify-center items-center relative w-fit h-fit">
       <canvas 
           ref={wheelRef} 
           width={size}
@@ -334,7 +335,8 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
           onMouseUp={(e) => {onDragEnd(e)}}
         />
         <div
-          className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent"
+          className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent
+          "
           ref={hueRef}
           style={{width: thickness, height: thickness}}
         ></div>
@@ -345,11 +347,11 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
           className="absolute pointer-events-none top-0 bottom-0 left-0 right-0 m-auto"
         />
         <div
-          className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent"
+          className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent "
           ref={svRef}
           style={{width: thickness, height: thickness}}
         ></div>
-    </>
+    </div>
  
   )
 }
