@@ -303,8 +303,8 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
     const huePointX = x;
     const huePointY = y;
 
+    // Cosine Rule
     const c = Math.sqrt(Math.pow((verticalPointX - huePointX), 2) + Math.pow((verticalPointY - huePointY), 2));
-
     let cosHue = (2*radius*radius - c*c) / (2*radius*radius);
     if (x < centerX) {
       cosHue = cosHue * -1;
