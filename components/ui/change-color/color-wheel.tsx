@@ -1,5 +1,6 @@
 "use client"
 
+import { cn } from '@/lib/utils'
 import React, { useEffect, useRef, useState } from 'react'
 
 type HSVType = {
@@ -17,13 +18,14 @@ type squareType = {
 }
 
 type ColorWheelProps = {
-  size: number
+  size: number,
+  className: string,
   radius: number
   thickness: number
 }
 
 
-const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
+const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
 
   // Global States
   const [hsv, setHSV] = useState<HSVType>({hue: 0, saturation: 0.5, value: 0.5});
@@ -134,6 +136,8 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
     }
   }, [hsv.hue, hsv.saturation, hsv.value])
   
+
+
   const onDragStart = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     e.preventDefault();
     
@@ -324,15 +328,15 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
   }
 
   return (
-    <div className="flex justify-center items-center relative w-fit h-fit">
+    <div className={cn("flex justify-center items-center relative rounded-[20px] w-fit h-fit")}>
       <canvas 
           ref={wheelRef} 
           width={size}
-          height={size} 
-          className="bg-red-500"
+          height={size}
           onMouseDown={(e) => {onDragStart(e)}}	
           onMouseMove={(e) => {onDragMove(e)}}
           onMouseUp={(e) => {onDragEnd(e)}}
+          onMouseLeave={(e) => {onDragEnd(e)}}
         />
         <div
           className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent
