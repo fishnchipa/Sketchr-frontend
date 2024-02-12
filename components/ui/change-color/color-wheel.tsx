@@ -1,34 +1,25 @@
 "use client"
 
+import { changeHue, hsvChangeSV } from '@/lib/features/localColorSlice'
+import { useAppDispatch, useAppSelector } from '@/lib/hooks'
+import { squareType } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import React, { useEffect, useRef, useState } from 'react'
 
-type HSVType = {
-  hue: number,
-  saturation: number,
-  value: number,
-}
-
-type squareType = {
-  in: boolean,
-  left: number,
-  right: number,
-  top: number,
-  bottom: number,
-}
 
 type ColorWheelProps = {
   size: number,
-  className: string,
   radius: number
   thickness: number
 }
 
 
-const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
+const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
 
   // Global States
-  const [hsv, setHSV] = useState<HSVType>({hue: 0, saturation: 0.5, value: 0.5});
+
+  const color = useAppSelector((state) => state.localColor);
+  const dispatch = useAppDispatch();
 
   // Local States
   const wheelRef = useRef<HTMLCanvasElement>(null);
@@ -42,15 +33,13 @@ const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
 
 
   const drawWheel = (ctx: CanvasRenderingContext2D) => {
-    let { saturation, lightness } = hsvToHSL(hsv.hue, hsv.saturation, hsv.value)
-    saturation = saturation * 100;
-    lightness = lightness * 100;
+    const hsl = color.hsl;
 
     for (var i = 0; i < 360; i++) {
       ctx.beginPath();
       ctx.lineWidth = thickness;
       ctx.arc(size/2, size/2, radius, (i - 90.7) * Math.PI / 180, (i - 89.3) * Math.PI / 180);
-      ctx.strokeStyle = "hsl(" + i + "," + saturation + "%," + lightness + "%)"
+      ctx.strokeStyle = "hsl(" + i + "," + hsl.saturation*100 + "%," + hsl.lightness*100 + "%)"
       ctx.stroke();
     }
     
@@ -60,7 +49,7 @@ const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
     const square = svSquareRef.current;
 
     if (square) {
-      const { hue } = hsv
+      const hue = color.hsv.hue;
       const length = square.width;
       const valueGradient = ctx.createLinearGradient(0, 0, 0, length);
       const saturationGradient = ctx.createLinearGradient(0, 0, length, 0);
@@ -75,47 +64,6 @@ const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
       ctx.fillRect(0, 0, length, length);
       ctx.globalCompositeOperation = "source-over";
     }
-
-  }
-
-  const hsvToRGB = (value: number, saturation: number, hue: number) => {
-    let chroma = value * saturation;
-    let hue1 = hue / 60;
-    let x = chroma * (1- Math.abs((hue1 % 2) - 1));
-    let r1, g1, b1;
-    if (hue1 >= 0 && hue1 <= 1) {
-      ([r1, g1, b1] = [chroma, x, 0]);
-    } else if (hue1 >= 1 && hue1 <= 2) {
-      ([r1, g1, b1] = [x, chroma, 0]);
-    } else if (hue1 >= 2 && hue1 <= 3) {
-      ([r1, g1, b1] = [0, chroma, x]);
-    } else if (hue1 >= 3 && hue1 <= 4) {
-      ([r1, g1, b1] = [0, x, chroma]);
-    } else if (hue1 >= 4 && hue1 <= 5) {
-      ([r1, g1, b1] = [x, 0, chroma]);
-    } else if (hue1 >= 5 && hue1 <= 6) {
-      ([r1, g1, b1] = [chroma, 0, x]);
-    } else {
-      ([r1, g1, b1] = [0, 0, 0]);
-    }
-    
-    let m = value - chroma;
-    let [r,g,b] = [r1+m, g1+m, b1+m];
-    
-    // Change r,g,b values from [0,1] to [0,255]
-    return [255*r,255*g,255*b];
-  }
-
-  const hsvToHSL = (h: number, s: number, v: number) => {
-    let hue = h;
-    let lightness = v * (1 - (s / 2));
-    let saturation = (v - lightness) / Math.min(lightness, 1 - lightness);
-
-    if (lightness === 0 || lightness === 1) {
-      saturation = 0;
-    }
-
-    return {hue, saturation, lightness}
   }
 
   useEffect(() => {
@@ -134,7 +82,7 @@ const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
         drawSquare(squareCtx);
       }
     }
-  }, [hsv.hue, hsv.saturation, hsv.value])
+  }, [color.hsv.hue, color.hsv.saturation, color.hsv.value])
   
 
 
@@ -288,16 +236,11 @@ const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
   }
 
   const calculateSV = (x: number, y:number, square: squareType) => {
-    const saturation = ((x - square.left) / (square.right - square.left));
+
+    const saturation = (((x - square.left) / (square.right - square.left)));
     const value = 1 - ((y - square.top) / (square.bottom - square.top));
     
-    setHSV(prev => {
-      return {
-        ...prev,
-        saturation: saturation,
-        value: value
-      }
-    })
+    dispatch(hsvChangeSV({s: saturation, v: value}));
   }
 
   const calculateHue = (x: number, y: number, centerX: number, centerY: number) => {
@@ -306,25 +249,22 @@ const ColorWheel = ({size, className, radius, thickness}: ColorWheelProps) => {
     const verticalPointY = centerY - radius;
     const huePointX = x;
     const huePointY = y;
-
+  
     // Cosine Rule
     const c = Math.sqrt(Math.pow((verticalPointX - huePointX), 2) + Math.pow((verticalPointY - huePointY), 2));
     let cosHue = (2*radius*radius - c*c) / (2*radius*radius);
     if (x < centerX) {
       cosHue = cosHue * -1;
     }
-
+  
+    // Ensure value is in correct quadrant
     let hue = Math.acos(cosHue) * 180 / Math.PI;
     if (x < centerX) {
       hue = hue + 180;
     }
-
-    setHSV(prev => {
-      return {
-        ...prev,
-        hue: hue
-      }
-    })
+  
+    dispatch(changeHue({h: hue}));
+    
   }
 
   return (
