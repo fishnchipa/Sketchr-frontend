@@ -1,14 +1,35 @@
 "use client"
 
-
-import React, { useEffect } from 'react'
+import React, { useRef } from 'react'
 import ColorWheel from './color-wheel'
 import ColorDisplay from './color-display'
 import ColorHex from './color-hex'
+import { useAppDispatch, useAppSelector } from '@/lib/hooks'
+import { setGlobalColor } from '@/lib/features/globalColorSlice'
+import { resetColor } from '@/lib/features/localColorSlice'
+import { openModalColor } from '@/lib/features/modalColorSlice'
 
 const ChangeColorModal = () => {
-
+  const localColor = useAppSelector((state) => state.localColor);
+  const globalColor = useAppSelector((state) => state.globalColor);
+  const dispatch = useAppDispatch();
   
+
+
+
+  const changeColor = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    dispatch(setGlobalColor(localColor));
+    dispatch(openModalColor(false))
+    
+  }
+
+  const cancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    dispatch(resetColor(globalColor));
+    dispatch(openModalColor(false));
+   
+  }
 
   return (
     <>
@@ -20,7 +41,6 @@ const ChangeColorModal = () => {
             size={325} 
             radius={149} 
             thickness={26} 
-            className={"w-450px h-350px"}
           />
         </div>
         <div className="flex flex-row gap-x-[25px]">
@@ -29,21 +49,22 @@ const ChangeColorModal = () => {
             <ColorHex />
             <div className="flex flex-row gap-x-[4px]">
               <button 
-                className="flex justify-center items-center w-[78px] h-[41px] rounded-[20px] bg-white text-black text-[15px]
-                font-semibold hover:bg-[#c2c2c2]"
+                onClick={(e) => {cancel(e)}}
+                className="flex justify-center items-center w-[78px] h-[41px] rounded-[20px] 
+                bg-white text-black text-[15px] font-semibold hover:bg-[#c2c2c2]"
               >
                 Cancel
               </button>
               <button 
-                className="flex justify-center items-center w-[78px] h-[41px] rounded-[20px] bg-white text-black text-[15px]
-                font-semibold hover:bg-[#c2c2c2]"
+                onClick={(e) => {changeColor(e)}}
+                className="flex justify-center items-center w-[78px] h-[41px] rounded-[20px]
+                bg-white text-black text-[15px] font-semibold hover:bg-[#c2c2c2]"
                 >
                 Ok
               </button>
             </div>
           </div>
         </div>
-
       </div>
     </>
   )
