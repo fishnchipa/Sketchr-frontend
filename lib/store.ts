@@ -5,13 +5,13 @@ import modalColorSlice from "@/lib/features/modalColorSlice";
 
 
 export const makeStore = () => {
-	return configureStore({
-		reducer: {
-			localColor: localColorReducer,
-			globalColor: globalColorReducer,
-			modalColor: modalColorSlice,
-		},
-	})
+  return configureStore({
+    reducer: {
+      localColor: localColorReducer,
+      globalColor: globalColorReducer,
+      modalColor: modalColorSlice,
+    },
+  })
 }
 
 export type AppStore = ReturnType<typeof makeStore>
