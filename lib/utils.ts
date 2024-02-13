@@ -7,8 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function hsvToHSL (h: number, s: number, v: number) {
-  
-
   let hue = h;
   let lightness = v * (1 - (s / 2));
   let saturation = (v - lightness) / Math.min(lightness, 1 - lightness);
@@ -89,7 +87,10 @@ export function rgbToHSV (r: number, g: number, b: number) {
 
 export function rgbToHSL (r: number, g: number, b: number) {
   const { hue: hueHSV, saturation: saturationHSV, value:valueHSV } = rgbToHSV(r, g, b);
-  const { hue, saturation, lightness } = hsvToHSL(hueHSV, saturationHSV, valueHSV);
+  const saturationDecimalHSV = saturationHSV / 100;
+  const valueDecimalHSV = valueHSV / 100;
+
+  const { hue, saturation, lightness } = hsvToHSL(hueHSV, saturationDecimalHSV, valueDecimalHSV);
 
   return { hue, saturation, lightness};
 }

@@ -1,6 +1,6 @@
-import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { hsvToHSL, hsvToRGB } from "../utils";
-import { ColorType } from "../types";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { hslToHSV, hslToRGB, hsvToHSL, hsvToRGB, rgbToHSL, rgbToHSV } from "../utils";
+import { ColorType, HSLInputType, HSVInputType, RGBInputType } from "../types";
 
 
 
@@ -22,66 +22,7 @@ const initialState = {
   }
 }
 
-type HSVInputType = "saturation" | "value";
-type HSLInputType = "saturation" | "lightness";
 
-
-const hsvChange: CaseReducer<ColorType, PayloadAction<{value: number, mode:HSVInputType}>> = (state, action) => {
-  const graphic = action.payload.mode;
-
-  let hueHSV = state.hsv.hue;
-  let saturationHSV = state.hsv.saturation;
-  let valueHSV = state.hsv.value;
-
-  switch (graphic) {
-    case "saturation":
-      saturationHSV = action.payload.value;
-      state.hsv.saturation = saturationHSV;
-      break;
-    case "value": 
-      valueHSV = action.payload.value;
-      state.hsv.value = valueHSV;
-      break;
-  }
-
-  const { 
-    hue: hueHSL, 
-    saturation: saturationHSL, 
-    lightness: lightnessHSL 
-  } = hsvToHSL(hueHSV, saturationHSV, valueHSV);
-
-  state.hsl.hue = hueHSL;
-  state.hsl.saturation = saturationHSL;
-  state.hsl.lightness = lightnessHSL;
-
-  const { red, green, blue } = hsvToRGB(hueHSV, saturationHSV, valueHSV);
-
-  state.rgb.red = red;
-  state.rgb.green = green;
-  state.rgb.blue = blue;
-}
-
-const hslChange: CaseReducer<ColorType, PayloadAction<{value: number, mode:HSLInputType}>> = (state, action) => {
-  const graphic = action.payload.mode;
-
-  let hueHSL =  state.hsl.hue;
-  let saturationHSL = state.hsl.saturation;
-  let lightnessHSL = state.hsl.lightness;
-
-  switch (graphic) {
-    case "saturation":
-      saturationHSL = action.payload.value;
-      state.hsl.saturation = saturationHSL;
-      break;
-    case "lightness": 
-      lightnessHSL = action.payload.value;
-      state.hsl.lightness = lightnessHSL
-      break;
-  }
-
-  
-
-}
 
 const localColorSlice = createSlice({
   name: "localColor",
@@ -95,37 +36,95 @@ const localColorSlice = createSlice({
       state.hsv.saturation = saturationHSV;
       state.hsv.value = valueHSV;
 
-      const { 
-        hue: hueHSL, 
-        saturation: saturationHSL, 
-        lightness: lightnessHSL 
-      } = hsvToHSL(hueHSV, saturationHSV, valueHSV);
+      state.hsl = hsvToHSL(hueHSV, saturationHSV, valueHSV);
+      state.rgb = hsvToRGB(hueHSV, saturationHSV, valueHSV);
 
-      state.hsl.hue = hueHSL;
-      state.hsl.saturation = saturationHSL;
-      state.hsl.lightness = lightnessHSL;
-
-      const { red, green, blue } = hsvToRGB(hueHSV, saturationHSV, valueHSV);
-
-      state.rgb.red = red;
-      state.rgb.green = green;
-      state.rgb.blue = blue;
     },
     changeHue: (state, action: PayloadAction<{ h: number }>) => {
       const hue = action.payload.h;
       state.hsl.hue = hue;
       state.hsv.hue = hue;
 
-      const { red, green, blue } = hsvToRGB(state.hsv.hue, state.hsv.saturation, state.hsv.value);
-      
-      state.rgb.red = red;
-      state.rgb.green = green;
-      state.rgb.blue = blue;
+      state.rgb = hsvToRGB(state.hsv.hue, state.hsv.saturation, state.hsv.value);
 
     },
 
-    hsvChange: hsvChange,
+    hslChange: (state, action: PayloadAction<{value: number, mode:HSLInputType}>) => {
+      const graphic = action.payload.mode;
+    
+      let hueHSL =  state.hsl.hue;
+      let saturationHSL = state.hsl.saturation;
+      let lightnessHSL = state.hsl.lightness;
+    
+      switch (graphic) {
+        case "saturation":
+          saturationHSL = action.payload.value;
+          state.hsl.saturation = saturationHSL;
+          break;
+        case "lightness": 
+          lightnessHSL = action.payload.value;
+          state.hsl.lightness = lightnessHSL
+          break;
+      }
+    
+      state.hsv = hslToHSV(hueHSL, saturationHSL, lightnessHSL);
+      state.rgb = hslToRGB(hueHSL, saturationHSL, lightnessHSL);
+     
 
+    },
+
+    hsvChange: (state, action: PayloadAction<{value: number, mode:HSVInputType}>) => {
+      
+      const graphic = action.payload.mode;
+    
+      let hueHSV = state.hsv.hue;
+      let saturationHSV = state.hsv.saturation;
+      let valueHSV = state.hsv.value;
+    
+      switch (graphic) {
+        case "saturation":
+          saturationHSV = action.payload.value;
+          state.hsv.saturation = saturationHSV;
+          break;
+        case "value": 
+          valueHSV = action.payload.value;
+          state.hsv.value = valueHSV;
+          break;
+      }
+    
+      state.hsl =  hsvToHSL(hueHSV, saturationHSV, valueHSV);
+      state.rgb = hsvToRGB(hueHSV, saturationHSV, valueHSV);
+    
+
+    },
+
+    rgbChange: (state, action: PayloadAction<{value: number, mode: RGBInputType}>) => {
+      const graphic = action.payload.mode;
+
+      let redRGB = state.rgb.red;
+      let greenRGB = state.rgb.green;
+      let blueRGB = state.rgb.blue;
+
+      switch (graphic) {
+        case "red":
+          redRGB = action.payload.value;
+          state.rgb.red = redRGB;
+          break;
+        case "green":
+          greenRGB = action.payload.value;
+          state.rgb.green = greenRGB;
+          break;
+
+        case "blue":
+          blueRGB = action.payload.value;
+          state.rgb.blue = blueRGB;
+          break;
+      }
+
+      state.hsl = rgbToHSL(redRGB, greenRGB, blueRGB);
+      state.hsv = rgbToHSV(redRGB, greenRGB, blueRGB);
+
+    },
 
     resetColor: (state, action: PayloadAction<ColorType>) => {
       state.hsl = action.payload.hsl;
@@ -136,5 +135,5 @@ const localColorSlice = createSlice({
   }
 })
 
-export const { hsvChangeSV, changeHue, resetColor } = localColorSlice.actions;
+export const { hsvChangeSV, changeHue, resetColor, hsvChange, hslChange, rgbChange } = localColorSlice.actions;
 export default localColorSlice.reducer;
