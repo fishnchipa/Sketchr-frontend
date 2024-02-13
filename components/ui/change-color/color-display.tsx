@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react'
 import ColorPrev from './color-prev';
-import { useAppSelector } from '@/lib/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { hslChange, hsvChange, rgbChange } from '@/lib/features/localColorSlice';
+import { HSLInputType, HSVInputType, RGBInputType } from '@/lib/types';
 
 type ColorModelType = "rgb" | "hsv" | "hsl";
 
@@ -13,18 +15,38 @@ type ColorObject = {
 }
 
 
-
 const ColorDisplay = () => {
-	const globalColor: ColorObject = useAppSelector((state) => state.localColor);
+	const dispatch = useAppDispatch();
+	const localColor: ColorObject = useAppSelector((state) => state.localColor);
 	const [colorModel, setColorModel] = useState<ColorModelType>("rgb");
 
 	const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (!e.currentTarget.value) return;
 
+		const value = parseFloat(e.currentTarget.value);
+		
+		switch (colorModel) {
+			case "rgb":
+				const rgbModel = e.currentTarget.name as RGBInputType; 
+				dispatch(rgbChange({value: value, mode: rgbModel}));
+				break;
+			
+			case "hsv":
+				const hsvModel = e.currentTarget.name as HSVInputType; 
+				dispatch(hsvChange({value: value, mode: hsvModel}));
+				break;
+
+			case "hsl": 
+				const hslModel = e.currentTarget.name as HSLInputType; 
+				dispatch(hslChange({value: value, mode: hslModel}));
+				break;
+		}
+		
 	}
 
 	const displayInput = (value: string) => {
 		if (colorModel == "hsl" || colorModel == "hsv") {
-			let displayValue = (globalColor[colorModel][value]);
+			let displayValue = (localColor[colorModel][value]);
 			if (value == "hue") {
 				displayValue = parseFloat((displayValue).toFixed(1));
 			} else {
@@ -43,6 +65,8 @@ const ColorDisplay = () => {
 						min="0"
 						max="100"
 						step=".1"
+						name={value}
+						onChange={(e) => {changeInput(e)}}
 					/>
 				</div>
 			)
@@ -54,12 +78,13 @@ const ColorDisplay = () => {
 						className="w-[98px] h-[22px] bg-white ring-offset-background focus-visible:outline-none 
 						focus-visible:ring-0 focus-visible:ring-ring p-1 text-[10px]
 						placeholder-black focus-visible:placeholder-gray-500 font-semibold"
-						placeholder={Math.round(globalColor[colorModel][value]).toString()}
+						placeholder={Math.round(localColor[colorModel][value]).toString()}
 						type="number"
 						min="0"
 						max="255"
 						step=".1"
-						onChange={(e) => {}}
+						name={value}
+						onChange={(e) => {changeInput(e)}}
 					/>
 				</div>
 			)
@@ -95,7 +120,7 @@ const ColorDisplay = () => {
 				</div>
 			</div>
 			<div className="flex flex-col justify-center gap-y-[5px]">
-				{Object.keys(globalColor[colorModel]).map((value) => {
+				{Object.keys(localColor[colorModel]).map((value) => {
 					return displayInput(value);
 				})}
 			</div>
