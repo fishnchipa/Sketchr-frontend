@@ -10,6 +10,7 @@ type SliderButtonProps = {
 const SliderButton = ({text, increment} : SliderButtonProps) => {
 
   const pressed = useRef(false);
+  const slider = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0);
   let percentage = 0;
 
@@ -18,6 +19,7 @@ const SliderButton = ({text, increment} : SliderButtonProps) => {
     const Xbounds = event.currentTarget.getBoundingClientRect().x;
     const length = Math.round(event.clientX - Xbounds + 1);
     
+
     if (pressed.current) {
       percentage = (Math.round(((length) / 200) * 100));
       setWidth(length)
@@ -27,16 +29,28 @@ const SliderButton = ({text, increment} : SliderButtonProps) => {
   }
 
   const mouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.preventDefault();
+    if (slider.current) {
+      slider.current.style.cursor = "grabbing";
+    }
     pressed.current = true;
     moveSlider(event);
   }
 
+  const mouseUp = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.preventDefault();
+    if (slider.current) {
+      slider.current.style.cursor = "grab";
+    }
+    pressed.current = false;
+  }
 
   return (
     <div
+      ref={slider}
       onMouseDown={(e) => {mouseDown(e)}}
       onMouseMove={(e) => {moveSlider(e)}}
-      onMouseUp={() => {pressed.current = false;}}
+      onMouseUp={(e) => {mouseUp(e)}}
       onMouseLeave={() => {pressed.current = false}}
       className="w-[200px] h-[35px] rounded-[5px] bg-[#252525] cursor-grab select-none
       relative
