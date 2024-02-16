@@ -5,15 +5,14 @@ import React, { useEffect, useState } from 'react'
 
 type UiButtonProps = {
   icon: string,
-  fn: () => void;
+  fn: () => void,
+  isSelected: boolean
 }
 
-const UiButton = ({icon, fn}: UiButtonProps) => {
-  const [isSelected, setIsSelected] = useState(false);
+const UiButton = ({icon, fn, isSelected}: UiButtonProps) => {
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setIsSelected(prev => !prev);
     fn();
   }
 
