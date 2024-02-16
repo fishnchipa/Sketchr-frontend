@@ -1,9 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = { 
 	open: false,
-	layer: []
+	layers: [],
+	selected: 0
 }
 
 const LayerMenuSlice = createSlice({
@@ -19,6 +20,9 @@ const LayerMenuSlice = createSlice({
 		cycleMenu: (state) => {
 			state.open = !state.open;
 		},
+		addNewLayer: (state, action) => {
+
+		}
 	}
 
 })
