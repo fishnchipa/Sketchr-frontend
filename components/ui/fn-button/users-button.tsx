@@ -5,17 +5,17 @@ import { cycleMenu } from '@/lib/features/usersMenuSlice';
 
 const UsersButton = () => {
 
-	const menu = useAppSelector((state) => state.usersMenu);
-	const dispatch = useAppDispatch();
+  const menu = useAppSelector((state) => state.usersMenu);
+  const dispatch = useAppDispatch();
 
-	const handleMenu = () => {
-		dispatch(cycleMenu());
-	}
+  const handleMenu = () => {
+    dispatch(cycleMenu());
+  }
 
 
-	return (
-		<UiButton icon={'/people.png'} fn={handleMenu} isSelected={menu.open}/>
-	)
+  return (
+    <UiButton icon={'/people.png'} fn={handleMenu} isSelected={menu.open}/>
+  )
 }
 
 export default UsersButton

@@ -7,16 +7,16 @@ import { cycleMenu } from '@/lib/features/homeMenuSlice'
 
 
 const HomeButton = () => {
-	const menu = useAppSelector((state) => state.homeMenu);
-	const dispatch = useAppDispatch();
+  const menu = useAppSelector((state) => state.homeMenu);
+  const dispatch = useAppDispatch();
 
-	const handleMenu = () => {
-		dispatch(cycleMenu());
-	}
+  const handleMenu = () => {
+    dispatch(cycleMenu());
+  }
 
-	return (
-		<UiButton icon={'/home.png'} fn={handleMenu} isSelected={menu.open}/>
-	)
+  return (
+    <UiButton icon={'/home.png'} fn={handleMenu} isSelected={menu.open}/>
+  )
 }
 
 export default HomeButton

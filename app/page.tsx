@@ -1,25 +1,40 @@
+"use client"
+import Body from "@/components/body";
+import Header from "@/components/header";
+import SideBar from "@/components/side-bar";
+import HomeMenu from "@/components/ui/home-menu/home-menu";
+import Canvas from "@/components/ui/layers-menu/canvas";
+import LayersMenu from "@/components/ui/layers-menu/layers-menu";
+import { VSeparator } from "@/components/ui/separator";
+import UsersMenu from "@/components/ui/users-menu/users-menu";
 
-import ChangeColorModal from "@/components/ui/change-color/change-color-modal";
-import ColorWheel from "@/components/ui/change-color/color-wheel";
+
 
 
 export default function Home() {
   
-
   return (
     <>
-    
-    <div className="flex flex-col w-screen h-screen gap-y-5 bg-[#494949] relative">
-
-      <ColorWheel 
-        size={500}
-        radius={200}
-        thickness={26}
-      />
-      <div className="bg-emerald-500 w-[500px] h-[500px]">
-
+      {/* <div className="w-screen h-screen relative">
+        <div className="w-full h-full flex flex-col fixed">
+          <Header />
+          <div className="z-10 h-full flex flex-row justify-between ">
+            <div className="h-full flex flex-row ">
+              <HomeMenu />
+              <SideBar />
+            </div>
+            <div className="h-full flex flex-row">
+              <UsersMenu />
+              <LayersMenu />
+            </div>
+          </div>
+        </div>
+        <Body />
+       
+      </div> */}
+      <div className="w-full h-screen flex justify-center items-center">
+        <Canvas />
       </div>
-    </div>
-    </>
+    </> 
   );
 }
