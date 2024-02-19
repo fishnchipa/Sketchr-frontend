@@ -1,18 +1,16 @@
 "use client"
 
 import useCanvas from '@/lib/hooks/use-canvas';
-import { Point } from '@/lib/types';
-import React, { useEffect, useRef } from 'react'
+import { CanvasRef, Point } from '@/lib/types';
+import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
+interface Props {}
 
-
-
-const Canvas = () => {
+const Canvas = ((props: Props, ref: Ref<CanvasRef>) => {
   
   const prevPoint = useRef<Point | null>(null);
   const isDrawing = useRef(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvas = canvasRef.current;
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   const onDraw = (start: Point, end: Point | null, ctx: CanvasRenderingContext2D) => {
     start = start ?? end;
@@ -24,7 +22,6 @@ const Canvas = () => {
       ctx.lineTo(end.x, end.y);
     }
     ctx.stroke();
-
     ctx.fillStyle = "#000000";
     ctx.beginPath();
     ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI);
@@ -32,6 +29,7 @@ const Canvas = () => {
   }
 
   const computePointInCanvas = (clientX: number, clientY: number) => {
+    
     if (canvasRef.current) {
         const boundingRect = canvasRef.current.getBoundingClientRect();
         return {
@@ -46,9 +44,11 @@ const Canvas = () => {
 
   const moveMouse = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     e.preventDefault();
+    const canvas = canvasRef.current;
     if (!isDrawing.current) { return; }
 
     if (canvas) {
+ 
       const ctx = canvas.getContext("2d");
    
       const point = computePointInCanvas(e.clientX, e.clientY);
@@ -71,20 +71,42 @@ const Canvas = () => {
     isDrawing.current = false;
   }
 
+  const mouseLeave = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    e.preventDefault();
+    prevPoint.current = null;
+  }
+
+  const show = () => {
+    if (canvasRef.current) {
+      canvasRef.current.style.zIndex = "1"
+    }
+  }
+
+  const hide = () => {
+    if (canvasRef.current) {
+      canvasRef.current.style.zIndex = "0"
+    }
+  }
+
+  useImperativeHandle(ref, () => ({
+    show,
+    hide
+  }))
 
   return (
     <canvas
-      className="border-[1px] border-black"
+      className={`border-[1px] border-black absolute bg-red-500`}
       width={500}
       height={500}
       ref={canvasRef}
       onMouseMove={(e) => moveMouse(e)}
       onMouseDown={(e) => mouseDown(e)}
       onMouseUp={(e) => mouseUp(e)}
+      onMouseLeave={(e) => mouseLeave(e)}
     />
       
   
   )
-}
+})
 
-export default Canvas
+export default forwardRef(Canvas);
