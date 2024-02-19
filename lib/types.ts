@@ -28,3 +28,13 @@ export type squareType = {
 export type HSVInputType = "saturation" | "value";
 export type HSLInputType = "saturation" | "lightness";
 export type RGBInputType = "red" | "green" | "blue";
+
+export type Point = {
+  x: number,
+  y: number
+}
+
+export type CanvasRef = {
+  show: () => void,
+  hide: () => void,
+}
