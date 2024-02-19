@@ -7,15 +7,27 @@ import Canvas from "@/components/ui/layers-menu/canvas";
 import LayersMenu from "@/components/ui/layers-menu/layers-menu";
 import { VSeparator } from "@/components/ui/separator";
 import UsersMenu from "@/components/ui/users-menu/users-menu";
+import { addNewLayer } from "@/lib/features/layersMenuSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { CanvasRef } from "@/lib/types";
+import { useRef, useState } from "react";
 
 
 
 
 export default function Home() {
-  
+
+  const cava = useAppSelector((state) => state.layerMenu.layers);
+  const dispatch = useAppDispatch();
+
+  // const click = () => {
+
+  //   const data = cavasref.current?.getData();
+  //   dispatch(addNewLayer(data!))
+  // }
   return (
     <>
-      {/* <div className="w-screen h-screen relative">
+      <div className="w-screen h-screen fixed">
         <div className="w-full h-full flex flex-col fixed">
           <Header />
           <div className="z-10 h-full flex flex-row justify-between ">
@@ -31,9 +43,6 @@ export default function Home() {
         </div>
         <Body />
        
-      </div> */}
-      <div className="w-full h-screen flex justify-center items-center">
-        <Canvas />
       </div>
     </> 
   );
