@@ -1,17 +1,29 @@
 "use client"
 
+import { useAppSelector } from '@/lib/hooks';
 import useCanvas from '@/lib/hooks/use-canvas';
 import { CanvasRef, Point } from '@/lib/types';
 import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
-interface Props {}
+interface CanvasProps {
+  id: number
+}
 
-const Canvas = ((props: Props, ref: Ref<CanvasRef>) => {
-  
+const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
+  const selectedLayer = useAppSelector((state) => state.layerMenu.selected);
   const prevPoint = useRef<Point | null>(null);
   const isDrawing = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
+  useEffect(() => {
+    if (id == selectedLayer) {
+      show();
+    } else {
+      hide();
+    }
+  }, [selectedLayer])
+
+
   const onDraw = (start: Point, end: Point | null, ctx: CanvasRenderingContext2D) => {
     start = start ?? end;
     ctx.beginPath();
@@ -78,31 +90,53 @@ const Canvas = ((props: Props, ref: Ref<CanvasRef>) => {
 
   const show = () => {
     if (canvasRef.current) {
+      console.log("show");
       canvasRef.current.style.zIndex = "1"
     }
   }
 
   const hide = () => {
     if (canvasRef.current) {
+      console.log("hide");
       canvasRef.current.style.zIndex = "0"
+    }
+  }
+
+  const getData = () => {
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      if (ctx) {
+        return ctx.getImageData(0,0,1000,500).data;
+      }
+
     }
   }
 
   useImperativeHandle(ref, () => ({
     show,
-    hide
+    hide,
+  
   }))
+
+  const debug = () => {
+    const ctx = canvasRef.current?.getContext("2d");
+
+    if (ctx) {
+      console.log(ctx.getImageData(0, 0, 1000, 500).data);
+    }
+  }
 
   return (
     <canvas
-      className={`border-[1px] border-black absolute bg-red-500`}
-      width={500}
+      className={`border-[1px] absolute`}
+      width={1000}
       height={500}
       ref={canvasRef}
       onMouseMove={(e) => moveMouse(e)}
       onMouseDown={(e) => mouseDown(e)}
       onMouseUp={(e) => mouseUp(e)}
       onMouseLeave={(e) => mouseLeave(e)}
+     
     />
       
   
