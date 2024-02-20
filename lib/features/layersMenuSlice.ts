@@ -4,7 +4,8 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 const initialState = { 
 	open: false,
 	layers: [0],
-	selected: 0
+	selected: 0,
+	isHidden: [false]
 }
 
 const LayerMenuSlice = createSlice({
@@ -25,13 +26,19 @@ const LayerMenuSlice = createSlice({
 
 			const id = state.layers.length;
 			state.layers.push(id);
+			state.isHidden.push(false);
 		},
-		changeLayer: (state, action: PayloadAction<number> ) => {
+		changeLayer: (state, action: PayloadAction<number>) => {
 			state.selected = action.payload;
-		}
+		},
+		changeVisibility: (state, action: PayloadAction<number>) => {
+			const id = action.payload;
+			state.isHidden[id] = !state.isHidden[id];
+		},
+		
 	}
 
 })
 
-export const { openMenu, closeMenu, cycleMenu, addNewLayer, changeLayer } = LayerMenuSlice.actions;
+export const { openMenu, closeMenu, cycleMenu, addNewLayer, changeLayer, changeVisibility } = LayerMenuSlice.actions;
 export default LayerMenuSlice.reducer;

@@ -35,6 +35,6 @@ export type Point = {
 }
 
 export type CanvasRef = {
-  show: () => void,
-  hide: () => void,
+  focus: () => void,
+  unfocus: () => void,
 }
