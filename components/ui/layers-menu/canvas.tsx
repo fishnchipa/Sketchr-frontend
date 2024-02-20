@@ -6,23 +6,30 @@ import { CanvasRef, Point } from '@/lib/types';
 import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 interface CanvasProps {
-  id: number
+  id: number,
 }
 
-const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
+const Canvas = (({ id }: CanvasProps) => {
   const selectedLayer = useAppSelector((state) => state.layerMenu.selected);
+  const isHidden = useAppSelector((state) => state.layerMenu.isHidden[id]);
   const prevPoint = useRef<Point | null>(null);
   const isDrawing = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   
   useEffect(() => {
-    if (id == selectedLayer) {
-      show();
-    } else {
-      hide();
-    }
+    id == selectedLayer ? focus() : unfocus();
   }, [selectedLayer])
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      if (isHidden) {
+        canvas.style.visibility = "hidden";
+      } else {
+        canvas.style.visibility = "visible"
+      }
+    }
+  },[isHidden]);
 
   const onDraw = (start: Point, end: Point | null, ctx: CanvasRenderingContext2D) => {
     start = start ?? end;
@@ -88,19 +95,18 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
     prevPoint.current = null;
   }
 
-  const show = () => {
+  const focus = () => {
     if (canvasRef.current) {
-      console.log("show");
       canvasRef.current.style.zIndex = "1"
     }
   }
 
-  const hide = () => {
+  const unfocus = () => {
     if (canvasRef.current) {
-      console.log("hide");
       canvasRef.current.style.zIndex = "0"
     }
   }
+
 
   const getData = () => {
     if (canvasRef.current) {
@@ -112,12 +118,6 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
     }
   }
 
-  useImperativeHandle(ref, () => ({
-    show,
-    hide,
-  
-  }))
-
   const debug = () => {
     const ctx = canvasRef.current?.getContext("2d");
 
@@ -128,7 +128,7 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
 
   return (
     <canvas
-      className={`border-[1px] absolute`}
+      className={`absolute`}
       width={1000}
       height={500}
       ref={canvasRef}
@@ -136,11 +136,10 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
       onMouseDown={(e) => mouseDown(e)}
       onMouseUp={(e) => mouseUp(e)}
       onMouseLeave={(e) => mouseLeave(e)}
-     
     />
       
   
   )
 })
 
-export default forwardRef(Canvas);
+export default Canvas;
