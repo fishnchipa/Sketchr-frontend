@@ -22,7 +22,7 @@ const LayerComposition = () => {
           <Image src={"/plus.png"} width={25} height={25} alt="add layer"/>
         </button>
       </div>
-      <div className="bg-[#393939] h-full rounded-b-[5px] p-[8px] flex flex-col gap-y-[5px]">
+      <div className="bg-[#393939] h-full rounded-b-[5px] p-[8px] flex flex-col-reverse justify-end gap-y-[5px] ">
         {layers.map((value, index)  => {
           if (menu.selected == index) {
             return (
