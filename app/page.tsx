@@ -24,20 +24,14 @@ export default function Home() {
     <>
       <div className="w-screen h-screen flex flex-col">
         <Header />
-        
-        <div className="fixed w-full h-full mt-[56px]">
-          <div className="absolute w-full h-full">
-            <Body />
-          </div>
-          <div className="absolute left-0 h-full flex ">
-            <HomeMenu />
-            <SideBar />
-          </div>
-          <div className="absolute right-0 h-full flex">
-            <UsersMenu />
-            <LayersMenu />
-          </div>
-          
+        <Body /> 
+        <div className="fixed left-0 h-full mt-[56px] z-max">
+          <HomeMenu />
+          <SideBar />
+        </div>
+        <div className="fixed right-0 h-full mt-[56px] flex z-max">
+          <UsersMenu />
+          <LayersMenu />
 
         </div>
       </div>
