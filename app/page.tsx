@@ -20,23 +20,18 @@ export default function Home() {
   const cava = useAppSelector((state) => state.layerMenu.layers);
   const dispatch = useAppDispatch();
 
-  // const click = () => {
-
-  //   const data = cavasref.current?.getData();
-  //   dispatch(addNewLayer(data!))
-  // }
   return (
     <>
       <div className="w-screen h-screen flex flex-col">
         <Header />
         
         <div className="fixed w-full h-full mt-[56px]">
+          <div className="absolute w-full h-full">
+            <Body />
+          </div>
           <div className="absolute left-0 h-full flex ">
             <HomeMenu />
             <SideBar />
-          </div>
-          <div className="absolute left-1/2 right-1/2 top-1/2 bottom-1/2">
-            <Body />
           </div>
           <div className="absolute right-0 h-full flex">
             <UsersMenu />
