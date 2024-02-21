@@ -27,23 +27,44 @@ export default function Home() {
   // }
   return (
     <>
-      <div className="w-screen h-screen fixed">
-        <div className="w-full h-full flex flex-col fixed">
-          <Header />
-          <div className="z-10 h-full flex flex-row justify-between ">
-            <div className="h-full flex flex-row ">
-              <HomeMenu />
-              <SideBar />
-            </div>
-            <div className="h-full flex flex-row">
-              <UsersMenu />
-              <LayersMenu />
-            </div>
+      <div className="w-screen h-screen flex flex-col">
+        <Header />
+        
+        <div className="fixed w-full h-full mt-[56px]">
+          <div className="absolute left-0 h-full flex ">
+            <HomeMenu />
+            <SideBar />
           </div>
+          <div className="absolute left-1/2 right-1/2 top-1/2 bottom-1/2">
+            <Body />
+          </div>
+          <div className="absolute right-0 h-full flex">
+            <UsersMenu />
+            <LayersMenu />
+          </div>
+          
+
         </div>
-        <Body />
-       
       </div>
     </> 
   );
 }
+
+{/* <>
+<div className="w-screen h-screen">
+  <div className="w-full h-full flex flex-col fixed">
+    <Header />
+    <div className="z-10 h-full flex flex-row justify-between ">
+      <div className="h-full flex flex-row ">
+        <HomeMenu />
+        <SideBar />
+      </div>
+      <div className="h-full flex flex-row">
+        <UsersMenu />
+        <LayersMenu />
+      </div>
+    </div>
+  </div>
+  <Body />
+</div>
+</>  */}
