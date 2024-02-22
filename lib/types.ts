@@ -35,6 +35,9 @@ export type Point = {
 }
 
 export type CanvasRef = {
+  mouseDown: (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
+  mouseUp: () => void,
+  mouseMove: (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
   focus: () => void,
   unfocus: () => void,
 }

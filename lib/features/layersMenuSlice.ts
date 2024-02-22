@@ -31,6 +31,9 @@ const LayerMenuSlice = createSlice({
 		changeLayer: (state, action: PayloadAction<number>) => {
 			state.selected = action.payload;
 		},
+		deleteLayer: (state, action: PayloadAction<number>) => {
+			state.layers.splice(action.payload, 1);
+		},
 		changeVisibility: (state, action: PayloadAction<number>) => {
 			const id = action.payload;
 			state.isHidden[id] = !state.isHidden[id];
