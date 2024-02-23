@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react'
 import UiButton from '@/components/ui/ui-button'
 import { useAppDispatch, useAppSelector } from '@/lib/hooks'
