@@ -3,18 +3,25 @@
 import { useAppSelector } from '@/lib/hooks';
 import useCanvas from '@/lib/hooks/use-canvas';
 import { CanvasRef, Point } from '@/lib/types';
-import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { brush, eraser } from "@/lib/tools";
 
 interface CanvasProps {
   id: number,
 }
 
-const Canvas = (({ id }: CanvasProps) => {
+
+
+const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
   const selectedLayer = useAppSelector((state) => state.layerMenu.selected);
   const isHidden = useAppSelector((state) => state.layerMenu.isHidden[id]);
+  const tool = useAppSelector((state) => state.tools);
   const prevPoint = useRef<Point | null>(null);
   const isDrawing = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const onDraw = useRef<((start: Point, end: Point | null, ctx: CanvasRenderingContext2D, size: number, opacity: number) => void)>(brush);
+  const size = useRef(5);
+  const opacity = useRef(100);
   
   useEffect(() => {
     id == selectedLayer ? focus() : unfocus();
@@ -31,21 +38,19 @@ const Canvas = (({ id }: CanvasProps) => {
     }
   },[isHidden]);
 
-  const onDraw = (start: Point, end: Point | null, ctx: CanvasRenderingContext2D) => {
-    start = start ?? end;
-    ctx.beginPath();
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = "#000000";
-    ctx.moveTo(start.x, start.y);
-    if (end) {
-      ctx.lineTo(end.x, end.y);
+  useEffect(() => {
+    switch (tool.selected) {
+      case 'brush':
+        onDraw.current = brush;
+        break;
+      case 'eraser':
+        onDraw.current = eraser;
+        break;
+      case 'cursor':
+      case 'fill':
+      case 'eyedrop':
     }
-    ctx.stroke();
-    ctx.fillStyle = "#000000";
-    ctx.beginPath();
-    ctx.arc(start.x, start.y, 2, 0, 2 * Math.PI);
-    ctx.fill();
-  }
+  }, [tool.selected])
 
   const computePointInCanvas = (clientX: number, clientY: number) => {
     
@@ -61,7 +66,7 @@ const Canvas = (({ id }: CanvasProps) => {
   }
 
 
-  const moveMouse = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+  const mouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     e.preventDefault();
     const canvas = canvasRef.current;
     if (!isDrawing.current) { return; }
@@ -72,7 +77,8 @@ const Canvas = (({ id }: CanvasProps) => {
    
       const point = computePointInCanvas(e.clientX, e.clientY);
       if (ctx) {
-        onDraw(point!, prevPoint.current, ctx);
+       
+        onDraw.current(point!, prevPoint.current, ctx, tool.size, tool.opacity);
       }
       prevPoint.current = point;
     }
@@ -84,14 +90,23 @@ const Canvas = (({ id }: CanvasProps) => {
 
   }
 
-  const mouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    e.preventDefault();
+  const mouseUp = () => {
+
     prevPoint.current = null;
     isDrawing.current = false;
   }
 
   const mouseLeave = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     e.preventDefault();
+    const end = computePointInCanvas(e.clientX, e.clientY);
+
+    if (canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      if (ctx && !isDrawing) {
+
+        onDraw.current(prevPoint.current!, end, ctx, tool.size, tool.opacity);
+      }
+    }
     prevPoint.current = null;
   }
 
@@ -107,24 +122,13 @@ const Canvas = (({ id }: CanvasProps) => {
     }
   }
 
-
-  const getData = () => {
-    if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
-      if (ctx) {
-        return ctx.getImageData(0,0,1000,500).data;
-      }
-
-    }
-  }
-
-  const debug = () => {
-    const ctx = canvasRef.current?.getContext("2d");
-
-    if (ctx) {
-      console.log(ctx.getImageData(0, 0, 1000, 500).data);
-    }
-  }
+  useImperativeHandle(ref, () => ({
+    mouseDown,
+    mouseUp,
+    mouseMove,
+    focus,
+    unfocus
+  }))
 
   return (
     <canvas
@@ -132,9 +136,9 @@ const Canvas = (({ id }: CanvasProps) => {
       width={1000}
       height={500}
       ref={canvasRef}
-      onMouseMove={(e) => moveMouse(e)}
+      onMouseMove={(e) => mouseMove(e)}
       onMouseDown={(e) => mouseDown(e)}
-      onMouseUp={(e) => mouseUp(e)}
+      onMouseUp={() => mouseUp()}
       onMouseLeave={(e) => mouseLeave(e)}
     />
       
@@ -142,4 +146,4 @@ const Canvas = (({ id }: CanvasProps) => {
   )
 })
 
-export default Canvas;
+export default forwardRef(Canvas);
