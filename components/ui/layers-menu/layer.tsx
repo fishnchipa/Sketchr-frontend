@@ -1,3 +1,5 @@
+"use client"
+
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { VSeparator } from '../separator';
@@ -12,13 +14,18 @@ type LayerProps = {
 }
 
 const Layer = ({id, name, isSelected}: LayerProps) => {
-
+  const menu = useAppSelector((state) => state.layerMenu);
   const dispatch = useAppDispatch();
   const [hidden, setHidden] = useState(false); 
 
   const changeHidden = () => {
     setHidden(prev => !prev);
     dispatch(changeVisibility(id));
+
+    const nextLayerIndex = menu.layers.findIndex((value) => value === id);
+    if (nextLayerIndex !== 0) {
+      dispatch(changeLayer(nextLayerIndex));
+    }
   }
 
   const switchLayer = () => {
@@ -41,6 +48,7 @@ const Layer = ({id, name, isSelected}: LayerProps) => {
       <VSeparator />
       <CanvasLayer />
       <h1 className="text-[15px] text-white">{name}</h1>
+     
     </div>
   )
 }
