@@ -1,18 +1,20 @@
 "use client"
 
+import { changeSize } from '@/lib/features/toolSlice'
+import { useAppDispatch, useAppSelector } from '@/lib/hooks'
 import React, { useEffect, useRef, useState } from 'react'
 
 type SliderButtonProps = {
   text: string
-  increment: (width: number) => void
+  increment: (width: number) => void,
+  inital: number
 }
 
-const SliderButton = ({text, increment} : SliderButtonProps) => {
-
+const SliderButton = ({text, increment, inital} : SliderButtonProps) => {
   const pressed = useRef(false);
   const slider = useRef<HTMLDivElement>(null)
-  const [width, setWidth] = useState(0);
-  let percentage = 0;
+  const [width, setWidth] = useState((Math.round((inital / 100) * 200)));
+  let percentage = inital;
 
   const moveSlider = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.preventDefault();
@@ -24,7 +26,6 @@ const SliderButton = ({text, increment} : SliderButtonProps) => {
       percentage = (Math.round(((length) / 200) * 100));
       setWidth(length)
       increment(percentage);
-      
     }
   }
 
@@ -66,7 +67,7 @@ const SliderButton = ({text, increment} : SliderButtonProps) => {
         w-[200px] h-[35px]"
         unselectable="on" 
         draggable="false" >
-        {text}: {Math.round(((width) / 200) * 100)}
+        {text}: {percentage}
       </p>
     </div>
   )
