@@ -2,10 +2,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import localColorReducer from "@/lib/features/localColorSlice";
 import globalColorReducer from "@/lib/features/globalColorSlice";
 import modalColorSlice from "@/lib/features/modalColorSlice";
-import homeMenuSlice from "./features/homeMenuSlice";
-import usersMenuSlice from "./features/usersMenuSlice";
-import layersMenuSlice from "./features/layersMenuSlice";
-
+import homeMenuSlice from "@/lib/features/homeMenuSlice";
+import usersMenuSlice from "@/lib/features/usersMenuSlice";
+import layersMenuSlice from "@/lib/features/layersMenuSlice";
+import toolSlice from "@/lib/features/toolSlice";
 
 
 export const makeStore = () => {
@@ -16,7 +16,8 @@ export const makeStore = () => {
       modalColor: modalColorSlice,
       homeMenu: homeMenuSlice,
       usersMenu: usersMenuSlice,
-      layerMenu: layersMenuSlice
+      layerMenu: layersMenuSlice,
+      tools: toolSlice,
     },
   })
 }
