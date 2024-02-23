@@ -29,7 +29,6 @@ const globalColorSlice = createSlice({
       state.rgb = action.payload.rgb; 
     }
   }
-
 })
 
 export const { setGlobalColor } = globalColorSlice.actions;
