@@ -1,6 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
 import localColorReducer from "@/lib/features/localColorSlice";
-import globalColorReducer from "@/lib/features/globalColorSlice";
 import modalColorSlice from "@/lib/features/modalColorSlice";
 import homeMenuSlice from "@/lib/features/homeMenuSlice";
 import usersMenuSlice from "@/lib/features/usersMenuSlice";
@@ -12,7 +11,6 @@ export const makeStore = () => {
   return configureStore({
     reducer: {
       localColor: localColorReducer,
-      globalColor: globalColorReducer,
       modalColor: modalColorSlice,
       homeMenu: homeMenuSlice,
       usersMenu: usersMenuSlice,
