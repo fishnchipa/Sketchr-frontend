@@ -105,3 +105,13 @@ export function rgbToHEX (r: number, g: number, b: number) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b); 
 }
 
+export function hexToRGB (hex: string) {
+  const numberHex = hex.replace("#","");
+  const bigint = parseInt(numberHex, 16);
+  const red = (bigint >> 16) & 255;
+  const green = (bigint >> 8) & 255;
+  const blue = bigint & 255;
+
+  return { red, green, blue }
+
+}
