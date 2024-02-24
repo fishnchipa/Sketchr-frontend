@@ -1,22 +1,35 @@
 import React from 'react'
-import UiButton from './ui/ui-button'
-import { HSeparator } from './ui/separator'
+import { HSeparator } from '@/components/ui/separator'
+import ToolButton from './ui/fn-button/tools-button'
+import { toolOptions } from '@/lib/types'
 
 
 const SideBar = () => {
+	const canvasTools: toolOptions[] = ["brush", "eraser", "cursor", "fill", "eyedrop"];
+	const transformTools: toolOptions[] = ["transform", "move"];
+	const selectionTools: toolOptions[] = ["selection", "circleSelection"];
+
 	return (
 		<div className="w-[56px] h-full bg-[#494949] flex flex-col items-center gap-y-[15px] pt-[35px] border-r-[2px] border-black">
-			<UiButton icon={'/brush.png'} fn={() => { } } isSelected={false} />
-			<UiButton icon={'/eraser.png'} fn={() => { } } isSelected={false} />
-			<UiButton icon={'/cursor.png'} fn={() => { } } isSelected={false} />
-			<UiButton icon={'/fill.png'} fn={() => { } } isSelected={false} />
-			<UiButton icon={'/eyedrop.png'} fn={() => { } } isSelected={false} />
+
+			{canvasTools.map(value => {
+				return (
+					<ToolButton key={value} type={value}/>
+				)
+			})}
+
 			<HSeparator />
-			<UiButton icon={'/transform.png'} fn={() => { } } isSelected={false} />
-			<UiButton icon={'/move.png'} fn={() => { } } isSelected={false} />
+			{transformTools.map(value => {
+				return (
+					<ToolButton key={value} type ={value} />
+				)
+			})}
 			<HSeparator />
-			<UiButton icon={'/selection.png'} fn={() => { } } isSelected={false} />
-			<UiButton icon={'/circleSelection.png'} fn={() => { } } isSelected={false} />
+			{selectionTools.map(value => {
+				return (
+					<ToolButton key={value} type ={value} />
+				)
+			})}
 		</div>
 	)
 }
