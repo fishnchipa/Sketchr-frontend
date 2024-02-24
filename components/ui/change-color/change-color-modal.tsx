@@ -5,29 +5,43 @@ import ColorWheel from './color-wheel'
 import ColorDisplay from './color-display'
 import ColorHex from './color-hex'
 import { useAppDispatch, useAppSelector } from '@/lib/hooks'
-import { setGlobalColor } from '@/lib/features/globalColorSlice'
 import { resetColor } from '@/lib/features/localColorSlice'
 import { closeModalColor } from '@/lib/features/modalColorSlice'
+import { hexToRGB, hsvToHSL, rgbToHEX, rgbToHSV } from '@/lib/utils'
+import { changeColor } from '@/lib/features/toolSlice'
+import { ColorType } from '@/lib/types'
 
 const ChangeColorModal = () => {
   const localColor = useAppSelector((state) => state.localColor);
-  const globalColor = useAppSelector((state) => state.globalColor);
+  const globalColor = useAppSelector((state) => state.tools.color);
   const modal = useAppSelector((state) => state.modalColor);
   const dispatch = useAppDispatch();
   
 
 
 
-  const changeColor = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleColor = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    dispatch(setGlobalColor(localColor));
+    const rgb = localColor.rgb;
+    const hex = rgbToHEX(Math.round(rgb.red), Math.round(rgb.green), Math.round(rgb.blue));
+    console.log(hex);
+    dispatch(changeColor(hex));
     dispatch(closeModalColor())
     
   }
 
   const cancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    dispatch(resetColor(globalColor));
+    const colorRGB = hexToRGB(globalColor);
+    const colorHSV = rgbToHSV(colorRGB.red, colorRGB.green, colorRGB.blue);
+    const colorHSL = hsvToHSL(colorHSV.hue, colorHSV.saturation, colorHSV.value);
+
+    const color: ColorType = {
+      rgb: colorRGB,
+      hsv: colorHSV,
+      hsl: colorHSL
+    }
+    dispatch(resetColor(color));
     dispatch(closeModalColor());
    
   }
@@ -58,7 +72,7 @@ const ChangeColorModal = () => {
                     Cancel
                   </button>
                   <button 
-                    onClick={(e) => {changeColor(e)}}
+                    onClick={(e) => {handleColor(e)}}
                     className="flex justify-center items-center w-[78px] h-[41px] rounded-[20px]
                     bg-white text-black text-[15px] font-semibold hover:bg-[#c2c2c2]"
                     >
