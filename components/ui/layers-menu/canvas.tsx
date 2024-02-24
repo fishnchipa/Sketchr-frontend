@@ -4,7 +4,7 @@ import { useAppSelector } from '@/lib/hooks';
 import useCanvas from '@/lib/hooks/use-canvas';
 import { CanvasRef, Point } from '@/lib/types';
 import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { brush, eraser } from "@/lib/tools";
+import { brush, cursor, eraser } from "@/lib/tools";
 
 interface CanvasProps {
   id: number,
@@ -19,9 +19,8 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
   const prevPoint = useRef<Point | null>(null);
   const isDrawing = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const onDraw = useRef<((start: Point, end: Point | null, ctx: CanvasRenderingContext2D, size: number, opacity: number) => void)>(brush);
-  const size = useRef(5);
-  const opacity = useRef(100);
+  const onDraw = useRef<((start: Point, end: Point | null, ctx: CanvasRenderingContext2D, size: number, opacity: number, color: string) => void)>(brush);
+  const paths = useState([]);
   
   useEffect(() => {
     id == selectedLayer ? focus() : unfocus();
@@ -47,6 +46,8 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
         onDraw.current = eraser;
         break;
       case 'cursor':
+        onDraw.current = cursor;
+
       case 'fill':
       case 'eyedrop':
     }
@@ -78,7 +79,7 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
       const point = computePointInCanvas(e.clientX, e.clientY);
       if (ctx) {
        
-        onDraw.current(point!, prevPoint.current, ctx, tool.size, tool.opacity);
+        onDraw.current(point!, prevPoint.current, ctx, tool.size, tool.opacity, tool.color);
       }
       prevPoint.current = point;
     }
@@ -104,7 +105,7 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx && !isDrawing) {
 
-        onDraw.current(prevPoint.current!, end, ctx, tool.size, tool.opacity);
+        onDraw.current(prevPoint.current!, end, ctx, tool.size, tool.opacity, tool.color);
       }
     }
     prevPoint.current = null;
