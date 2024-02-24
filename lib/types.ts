@@ -41,3 +41,5 @@ export type CanvasRef = {
   focus: () => void,
   unfocus: () => void,
 }
+
+export type toolOptions = "brush" | "eraser" | "cursor" | "fill" | "eyedrop" | "transform" | "move" | "selection" | "circleSelection"; 
