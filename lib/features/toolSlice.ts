@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Point } from "@/lib/types";
+import { toolOptions } from "@/lib/types";
 
-type toolOptions = "brush" | "eraser" | "cursor" | "fill" | "eyedrop"; 
+
 
 type ToolType = {
 	selected: toolOptions,
@@ -34,7 +34,7 @@ const ToolSlice = createSlice({
 					break;
 
 				case "cursor":
-				
+					state.selected = "cursor";
 				
 				
 				case "fill":
@@ -49,9 +49,12 @@ const ToolSlice = createSlice({
 		},
 		changeOpacity: (state, action: PayloadAction<number>) => {
 			state.opacity = action.payload;
-		}  
+		},
+		changeColor: (state, action) => {
+			state.color = action.payload;
+		}
 	}
 })
 
-export const { changeTool, changeSize, changeOpacity } = ToolSlice.actions;
+export const { changeTool, changeSize, changeOpacity, changeColor } = ToolSlice.actions;
 export default ToolSlice.reducer;
