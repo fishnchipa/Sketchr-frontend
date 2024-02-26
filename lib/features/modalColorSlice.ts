@@ -1,6 +1,18 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-const initialState = { open: false };
+const initialState = { 
+  open: false,
+  wheel: {
+    square: {
+      x: 0,
+      y: 0
+    },
+    circle: {
+      x: 0,
+      y: 0
+    }
+  }
+};
 
 const modalColorSlice = createSlice({
   name: "modalColor",
