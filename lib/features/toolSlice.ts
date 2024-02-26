@@ -69,8 +69,9 @@ const ToolSlice = createSlice({
 			const hsv = action.payload;
 			state.color.hsv = hsv;
 			const rgb = hsvToRGB(hsv.hue, hsv.saturation, hsv.value);
-			const hex = rgbToHEX(rgb.red, rgb.green, rgb.blue);
+			const hex = rgbToHEX(Math.round(rgb.red), Math.round(rgb.green), Math.round(rgb.blue));
 			state.color.hex = hex;
+			console.log(hex);
 		}
 	}
 })

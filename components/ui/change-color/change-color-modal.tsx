@@ -13,7 +13,7 @@ import { ColorType } from '@/lib/types'
 
 const ChangeColorModal = () => {
   const localColor = useAppSelector((state) => state.localColor);
-  const globalColor = useAppSelector((state) => state.tools.color.hsv);
+  const globalColor = useAppSelector((state) => state.tools.color);
   const modal = useAppSelector((state) => state.modalColor);
   const dispatch = useAppDispatch();
   
@@ -22,7 +22,7 @@ const ChangeColorModal = () => {
 
   const handleColor = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-  
+    console.log("hi")
     dispatch(changeColor(localColor.hsv));
     dispatch(closeModalColor())
     
@@ -30,9 +30,9 @@ const ChangeColorModal = () => {
 
   const cancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const colorRGB = hsvToRGB(globalColor.hue, globalColor.saturation/100, globalColor.value/100);
+    const colorHSV = globalColor.hsv;
+    const colorRGB = hsvToRGB(colorHSV.hue, colorHSV.saturation/100, colorHSV.value/100);
     const colorHSL = rgbToHSL(colorRGB.red, colorRGB.green, colorRGB.blue);
-    const colorHSV = globalColor;
 
 
     const color: ColorType = {

@@ -79,7 +79,7 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
       const point = computePointInCanvas(e.clientX, e.clientY);
       if (ctx) {
        
-        onDraw.current(point!, prevPoint.current, ctx, tool.size, tool.opacity, tool.color);
+        onDraw.current(point!, prevPoint.current, ctx, tool.size, tool.opacity, tool.color.hex);
       }
       prevPoint.current = point;
     }
@@ -105,7 +105,7 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx && !isDrawing) {
 
-        onDraw.current(prevPoint.current!, end, ctx, tool.size, tool.opacity, tool.color);
+        onDraw.current(prevPoint.current!, end, ctx, tool.size, tool.opacity, tool.color.hex);
       }
     }
     prevPoint.current = null;
