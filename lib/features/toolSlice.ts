@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { toolOptions } from "@/lib/types";
+import { HSVType, toolOptions } from "@/lib/types";
+import { hsvToRGB, rgbToHEX } from "../utils";
 
 
 
@@ -7,14 +8,28 @@ type ToolType = {
 	selected: toolOptions,
 	size: number,
 	opacity: number,
-	color: string
+	color: {
+		hex: string,
+		hsv: {
+			hue: number,
+			saturation: number,
+			value: number
+		}
+	}
 }
 
 const initialState: ToolType = {
 	selected: "brush" as toolOptions,
 	size: 5,
 	opacity: 100,
-	color: "#000000"
+	color: {
+		hex: "#000000",
+		hsv: {
+			hue: 0,
+			saturation: 0,
+			value: 0
+		}
+	}
 }
 
 const ToolSlice = createSlice({
@@ -50,8 +65,12 @@ const ToolSlice = createSlice({
 		changeOpacity: (state, action: PayloadAction<number>) => {
 			state.opacity = action.payload;
 		},
-		changeColor: (state, action) => {
-			state.color = action.payload;
+		changeColor: (state, action: PayloadAction<HSVType>) => {
+			const hsv = action.payload;
+			state.color.hsv = hsv;
+			const rgb = hsvToRGB(hsv.hue, hsv.saturation, hsv.value);
+			const hex = rgbToHEX(rgb.red, rgb.green, rgb.blue);
+			state.color.hex = hex;
 		}
 	}
 })
