@@ -6,19 +6,19 @@ import { ColorType, HSLInputType, HSVInputType, RGBInputType } from "../types";
 
 const initialState = {
   rgb: {
-    red: 128,
-    green: 64,
-    blue: 64 
+    red: 0,
+    green: 0,
+    blue: 0 
   }, 
   hsv: {
     hue: 0,
-    saturation: 0.5,
-    value: 0.5
+    saturation: 0,
+    value: 0
   },
   hsl: {
     hue: 0,
-    saturation: 0.333,
-    lightness: 0.375
+    saturation: 0,
+    lightness: 0
   },
 }
 
