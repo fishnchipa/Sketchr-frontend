@@ -34,7 +34,6 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
 
   const drawWheel = (ctx: CanvasRenderingContext2D) => {
     const hsl = color.hsl;
-
     for (var i = 0; i < 360; i++) {
       ctx.beginPath();
       ctx.lineWidth = thickness;
@@ -92,7 +91,6 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
       const squareY = value*square.height + offsetY;
       svDiv.style.left = squareX + "px";
       svDiv.style.bottom = squareY + "px";
-      console.log()
     }
   }, [])
 

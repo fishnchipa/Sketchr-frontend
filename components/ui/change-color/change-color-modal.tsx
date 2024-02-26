@@ -22,7 +22,6 @@ const ChangeColorModal = () => {
 
   const handleColor = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    console.log("hi")
     dispatch(changeColor(localColor.hsv));
     dispatch(closeModalColor())
     
@@ -31,9 +30,8 @@ const ChangeColorModal = () => {
   const cancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     const colorHSV = globalColor.hsv;
-    const colorRGB = hsvToRGB(colorHSV.hue, colorHSV.saturation/100, colorHSV.value/100);
+    const colorRGB = hsvToRGB(colorHSV.hue, colorHSV.saturation, colorHSV.value);
     const colorHSL = rgbToHSL(colorRGB.red, colorRGB.green, colorRGB.blue);
-
 
     const color: ColorType = {
       rgb: colorRGB,
