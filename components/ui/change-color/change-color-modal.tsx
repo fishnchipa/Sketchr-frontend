@@ -7,13 +7,13 @@ import ColorHex from './color-hex'
 import { useAppDispatch, useAppSelector } from '@/lib/hooks'
 import { resetColor } from '@/lib/features/localColorSlice'
 import { closeModalColor } from '@/lib/features/modalColorSlice'
-import { hexToRGB, hsvToHSL, rgbToHEX, rgbToHSV } from '@/lib/utils'
+import { hexToRGB, hsvToHSL, hsvToRGB, rgbToHEX, rgbToHSL, rgbToHSV } from '@/lib/utils'
 import { changeColor } from '@/lib/features/toolSlice'
 import { ColorType } from '@/lib/types'
 
 const ChangeColorModal = () => {
   const localColor = useAppSelector((state) => state.localColor);
-  const globalColor = useAppSelector((state) => state.tools.color);
+  const globalColor = useAppSelector((state) => state.tools.color.hsv);
   const modal = useAppSelector((state) => state.modalColor);
   const dispatch = useAppDispatch();
   
@@ -22,19 +22,18 @@ const ChangeColorModal = () => {
 
   const handleColor = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const rgb = localColor.rgb;
-    const hex = rgbToHEX(Math.round(rgb.red), Math.round(rgb.green), Math.round(rgb.blue));
-    console.log(hex);
-    dispatch(changeColor(hex));
+  
+    dispatch(changeColor(localColor.hsv));
     dispatch(closeModalColor())
     
   }
 
   const cancel = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    const colorRGB = hexToRGB(globalColor);
-    const colorHSV = rgbToHSV(colorRGB.red, colorRGB.green, colorRGB.blue);
-    const colorHSL = hsvToHSL(colorHSV.hue, colorHSV.saturation, colorHSV.value);
+    const colorRGB = hsvToRGB(globalColor.hue, globalColor.saturation/100, globalColor.value/100);
+    const colorHSL = rgbToHSL(colorRGB.red, colorRGB.green, colorRGB.blue);
+    const colorHSV = globalColor;
+
 
     const color: ColorType = {
       rgb: colorRGB,
