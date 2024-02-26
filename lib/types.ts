@@ -43,3 +43,9 @@ export type CanvasRef = {
 }
 
 export type toolOptions = "brush" | "eraser" | "cursor" | "fill" | "eyedrop" | "transform" | "move" | "selection" | "circleSelection"; 
+
+export type HSVType = {
+  hue: number,
+  saturation: number,
+  value: number
+}
