@@ -19,7 +19,7 @@ const initialState = {
     hue: 0,
     saturation: 0.333,
     lightness: 0.375
-  }
+  },
 }
 
 
