@@ -19,6 +19,7 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
   // Global States
 
   const color = useAppSelector((state) => state.localColor);
+  const colorGlobal = useAppSelector((state) => state.tools.color.hsv)
   const dispatch = useAppDispatch();
 
   // Local States
@@ -28,7 +29,6 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
   const svRef = useRef<HTMLDivElement>(null);
   const [pressedHue, setPressedHue] = useState(false);
   const [pressedSV, setPressedSV] = useState(false);
-
 
 
 
@@ -65,6 +65,37 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
       ctx.globalCompositeOperation = "source-over";
     }
   }
+
+  useEffect(() => {
+
+    const hueDiv = hueRef.current;
+    const svDiv = svRef.current;
+    const wheel = wheelRef.current;
+    const square = svSquareRef.current
+    const { hue, saturation, value } = colorGlobal;
+
+    if (hueDiv && svDiv && wheel && square) {
+      // Inital position of Hue selector based on global color
+      const wheelBounds = wheel.getBoundingClientRect();
+      const centerX = (wheelBounds.width / 2);
+      const centerY = (wheelBounds.height / 2);
+      const wheelX = Math.cos((hue + 180)*Math.PI/180) * radius + centerX - (thickness / 2);
+      const wheelY = Math.sin((hue + 180)*Math.PI/180) * -radius + centerY - (thickness / 2);
+      hueDiv.style.top = wheelX + "px";
+      hueDiv.style.left = wheelY + "px";
+      
+      // Initial position of SV selector based on global color;
+      const squareBounds = square.getBoundingClientRect();
+      const offsetX = squareBounds.x - wheelBounds.x - (thickness /2);
+      const offsetY = squareBounds.y - wheelBounds.y - (thickness /2);
+      const squareX = saturation*square.width + offsetX;
+      const squareY = value*square.height + offsetY;
+      svDiv.style.left = squareX + "px";
+      svDiv.style.bottom = squareY + "px";
+      console.log()
+    }
+  }, [])
+
 
   useEffect(() => {
     const wheel = wheelRef.current;
@@ -277,6 +308,7 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
           onMouseMove={(e) => {onDragMove(e)}}
           onMouseUp={(e) => {onDragEnd(e)}}
           onMouseLeave={(e) => {onDragEnd(e)}}
+          className="bg-red-500"
         />
         <div
           className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent
