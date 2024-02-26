@@ -308,7 +308,6 @@ const ColorWheel = ({size, radius, thickness}: ColorWheelProps) => {
           onMouseMove={(e) => {onDragMove(e)}}
           onMouseUp={(e) => {onDragEnd(e)}}
           onMouseLeave={(e) => {onDragEnd(e)}}
-          className="bg-red-500"
         />
         <div
           className="border-[2px] border-black ring-1 ring-offset-white absolute rounded-full pointer-events-none bg-transparent
