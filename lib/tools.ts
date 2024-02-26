@@ -9,10 +9,10 @@ export const brush = (start: Point, end: Point | null, ctx: CanvasRenderingConte
     ctx.lineJoin = "round";
 		ctx.lineWidth = size;
 		ctx.globalCompositeOperation = "source-over";
-		ctx.globalAlpha = opacity / 100;
+		// ctx.globalAlpha = opacity / 100;
 		ctx.strokeStyle = color;
+		ctx.beginPath();
 		ctx.moveTo(start.x, start.y);
-		
 		if (end) {
 			ctx.lineTo(end.x, end.y);
 			
