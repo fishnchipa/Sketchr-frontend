@@ -31,6 +31,9 @@ const LayerMenuSlice = createSlice({
     changeLayer: (state, action: PayloadAction<number>) => {
       state.selected = action.payload;
     },
+    changeLayerPosition: (state, action: PayloadAction<number>) => {
+      
+    },
     deleteLayer: (state, action: PayloadAction<number>) => {
       state.layers.splice(action.payload, 1);
     },
@@ -43,5 +46,5 @@ const LayerMenuSlice = createSlice({
 
 })
 
-export const { openMenu, closeMenu, cycleMenu, addNewLayer, changeLayer, changeVisibility } = LayerMenuSlice.actions;
+export const { openMenu, closeMenu, cycleMenu, addNewLayer, changeLayer, changeVisibility, changeLayerPosition } = LayerMenuSlice.actions;
 export default LayerMenuSlice.reducer;
