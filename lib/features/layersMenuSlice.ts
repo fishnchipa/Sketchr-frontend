@@ -2,44 +2,44 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = { 
-	open: false,
-	layers: [0],
-	selected: 0,
-	isHidden: [false]
+  open: false,
+  layers: [0],
+  selected: 0,
+  isHidden: [false]
 }
 
 const LayerMenuSlice = createSlice({
-	name: "layerMenu",
-	initialState,
-	reducers: {
-		openMenu: (state) => {
-			state.open = true;
-		},
-		closeMenu: (state) => {
-			state.open = false;
-		},
-		cycleMenu: (state) => {
-			state.open = !state.open;
-		},
-		addNewLayer: (state) => {
-			// TODO: implement add new layer better
+  name: "layerMenu",
+  initialState,
+  reducers: {
+    openMenu: (state) => {
+      state.open = true;
+    },
+    closeMenu: (state) => {
+      state.open = false;
+    },
+    cycleMenu: (state) => {
+      state.open = !state.open;
+    },
+    addNewLayer: (state) => {
+      // TODO: implement add new layer better
 
-			const id = state.layers.length;
-			state.layers.push(id);
-			state.isHidden.push(false);
-		},
-		changeLayer: (state, action: PayloadAction<number>) => {
-			state.selected = action.payload;
-		},
-		deleteLayer: (state, action: PayloadAction<number>) => {
-			state.layers.splice(action.payload, 1);
-		},
-		changeVisibility: (state, action: PayloadAction<number>) => {
-			const id = action.payload;
-			state.isHidden[id] = !state.isHidden[id];
-		},
-		
-	}
+      const id = state.layers.length;
+      state.layers.push(id);
+      state.isHidden.push(false);
+    },
+    changeLayer: (state, action: PayloadAction<number>) => {
+      state.selected = action.payload;
+    },
+    deleteLayer: (state, action: PayloadAction<number>) => {
+      state.layers.splice(action.payload, 1);
+    },
+    changeVisibility: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      state.isHidden[id] = !state.isHidden[id];
+    },
+    
+  }
 
 })
 

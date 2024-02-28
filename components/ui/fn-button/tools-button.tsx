@@ -7,26 +7,26 @@ import UiButton from '@/components/ui/ui-button';
 import { toolOptions } from '@/lib/types';
 
 type ToolButtonProps = {
-	type: toolOptions,
+  type: toolOptions,
 }
 
 const ToolButton = ({ type }: ToolButtonProps) => {
-	const dispatch = useAppDispatch();
-	const tool = useAppSelector((state) => state.tools.selected);
-	const [selected, setSelected] = useState(true);
+  const dispatch = useAppDispatch();
+  const tool = useAppSelector((state) => state.tools.selected);
+  const [selected, setSelected] = useState(true);
 
-	useEffect(() => {
-		tool === type ? setSelected(true) : setSelected(false);
-	},[tool]);
+  useEffect(() => {
+    tool === type ? setSelected(true) : setSelected(false);
+  },[tool]);
 
-	const setBrush = () => {
-		dispatch(changeTool(type));
-	}
+  const setBrush = () => {
+    dispatch(changeTool(type));
+  }
 
 
-	return (
-		<UiButton icon={`/${type}.png`} fn={setBrush} isSelected={selected} />
-	)
+  return (
+    <UiButton icon={`/${type}.png`} fn={setBrush} isSelected={selected} />
+  )
 }
 
 
