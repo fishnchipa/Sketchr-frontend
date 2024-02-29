@@ -1,11 +1,18 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { v4 as uuidv4 } from "uuid";
 
 
+const initalId = uuidv4();
 const initialState = { 
   open: false,
-  layers: [0],
-  selected: 0,
-  isHidden: [false]
+  layers: [
+    {
+      id: initalId,
+      name: "Layer 0",
+      isHidden: false,
+    }
+  ],
+  selected: initalId,
 }
 
 const LayerMenuSlice = createSlice({
@@ -22,24 +29,42 @@ const LayerMenuSlice = createSlice({
       state.open = !state.open;
     },
     addNewLayer: (state) => {
-      // TODO: implement add new layer better
 
-      const id = state.layers.length;
-      state.layers.push(id);
-      state.isHidden.push(false);
+      const newLayer = {
+        id: uuidv4(),
+        name: `Layer ${state.layers.length}`,
+        isHidden: false,
+      }
+      state.layers = [...state.layers, newLayer];
+
     },
-    changeLayer: (state, action: PayloadAction<number>) => {
+    changeLayer: (state, action: PayloadAction<string>) => {
       state.selected = action.payload;
     },
-    changeLayerPosition: (state, action: PayloadAction<number>) => {
-      
+    changeLayerPosition: (state, action: PayloadAction<{id: string, index: number}>) => {
+      const layerIndex = state.layers.findIndex(value => value.id === action.payload.id);
+      const layer = state.layers.find(value => value.id === action.payload.id);
+      if (layer) {
+        const tempArr = state.layers.slice();
+        tempArr.splice(layerIndex, 1);
+        tempArr.splice(state.layers.length - action.payload.index, 0, layer);
+        state.layers = tempArr;
+  
+      }
     },
-    deleteLayer: (state, action: PayloadAction<number>) => {
-      state.layers.splice(action.payload, 1);
+    deleteLayer: (state, action: PayloadAction<string>) => {
+      const index = state.layers.findIndex(value => value.id === action.payload);
+      state.layers.splice(index, 1);
     },
-    changeVisibility: (state, action: PayloadAction<number>) => {
+    changeVisibility: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      state.isHidden[id] = !state.isHidden[id];
+      const index = state.layers.findIndex((value) => value.id === id);
+      if (index) {
+   
+        const result = state.layers[index];
+        state.layers[index] = {...result, isHidden: true};
+      }
+      
     },
     
   }
