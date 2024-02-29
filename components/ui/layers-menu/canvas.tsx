@@ -7,14 +7,14 @@ import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useR
 import { brush, cursor, eraser } from "@/lib/tools";
 
 interface CanvasProps {
-  id: number,
+  id: string,
 }
 
 
 
 const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
   const selectedLayer = useAppSelector((state) => state.layerMenu.selected);
-  const isHidden = useAppSelector((state) => state.layerMenu.isHidden[id]);
+  const layer = useAppSelector((state) => state.layerMenu.layers.find(value => value.id === id));
   const tool = useAppSelector((state) => state.tools);
   const prevPoint = useRef<Point | null>(null);
   const isDrawing = useRef(false);
@@ -23,19 +23,19 @@ const Canvas = (({ id }: CanvasProps, ref: Ref<CanvasRef>) => {
   const paths = useState([]);
   
   useEffect(() => {
-    id == selectedLayer ? focus() : unfocus();
+    id === selectedLayer ? focus() : unfocus();
   }, [selectedLayer])
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      if (isHidden) {
+    if (canvas && layer) {
+      if (layer.isHidden) {
         canvas.style.visibility = "hidden";
       } else {
         canvas.style.visibility = "visible"
       }
     }
-  },[isHidden]);
+  },[layer?.isHidden]);
 
   useEffect(() => {
     switch (tool.selected) {
