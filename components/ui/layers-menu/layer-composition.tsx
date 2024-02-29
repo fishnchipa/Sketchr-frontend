@@ -9,11 +9,12 @@ import { addNewLayer } from '@/lib/features/layersMenuSlice'
 const LayerComposition = () => {
   const menu = useAppSelector((state) => state.layerMenu);
   const dispatch = useAppDispatch();
-  const layers = menu.layers
+  
 
   const createNewLayer = () => {
     dispatch(addNewLayer());
   }
+
 
   return (
     <div className="w-full h-full pb-[100px]">
@@ -23,14 +24,14 @@ const LayerComposition = () => {
         </button>
       </div>
       <div className="bg-[#393939] h-full rounded-b-[5px] p-[8px] flex flex-col-reverse justify-end gap-y-[5px] ">
-        {layers.map((value, index)  => {
-          if (menu.selected == index) {
+        {menu.layers.map((value)  => {
+          if (menu.selected === value.id) {
             return (
-              <Layer key={value} name={`Layer ${index}`} isSelected={true} id={index}/>
+              <Layer name={value.name} isSelected={true} id={value.id} key={value.id}/>
             )
           } else {
             return (
-              <Layer key={value} name={`Layer ${index}`} isSelected={false} id={index}/>
+              <Layer name={value.name} isSelected={false} id={value.id} key={value.id}/>
             )
           }
         })}
