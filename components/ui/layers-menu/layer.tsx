@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { changeLayer, changeLayerPosition, changeVisibility } from '@/lib/features/layersMenuSlice';
 
 type LayerProps = {
-  id: number
+  id: string
   name: string,
   isSelected: boolean
 }
@@ -26,9 +26,10 @@ const Layer = ({id, name, isSelected}: LayerProps) => {
     setHidden(prev => !prev);
     dispatch(changeVisibility(id));
 
-    const nextLayerIndex = menu.layers.findIndex((value) => value === id);
+    const nextLayerIndex = menu.layers.findIndex((value) => value.id === id);
     if (nextLayerIndex !== 0) {
-      dispatch(changeLayer(nextLayerIndex));
+      const layer = menu.layers[nextLayerIndex - 1];
+      dispatch(changeLayer(layer.id));
     }
   }
 
@@ -50,11 +51,16 @@ const Layer = ({id, name, isSelected}: LayerProps) => {
     }
     isDragging.current = false;
     if (layerPosY.current >= 1 && layerPosX.current > 0) {
-      let index = Math.round(layerPosY.current / 55)
+      let index = Math.round(layerPosY.current / 55 + 1)
       if (index > menu.layers.length) {
-        index = menu.layers.length - 1;
+        index = menu.layers.length;
       }
-      dispatch(changeLayerPosition(index));
+      const output = {
+        id: id,
+        index: index
+      }
+      
+      dispatch(changeLayerPosition(output));
     }
     layerRef.current.style.position = "static";
   }
@@ -80,27 +86,30 @@ const Layer = ({id, name, isSelected}: LayerProps) => {
   }
 
   return (
-    <div 
-      className={`w-[259px] h-[50px] bg-[#444444] rounded-[5px] flex flex-row gap-x-[15px] items-center px-[13px] 
-      ${isSelected ? "border-dashed border-[#9c9c9c] border-[3px]" : "border-none"} `}
-      ref={layerRef}
-      onClick={switchLayer}
-      onMouseDown={(e) => changePositionAbsolute(e)}
-      onMouseUp={(e) => changePositionStatic(e)}
-      onMouseMove={(e) => {moveDraggable(e)}}
+    <>
+
+      <div 
+        className={`w-[259px] h-[50px] bg-[#444444] rounded-[5px] flex flex-row gap-x-[15px] items-center px-[13px] 
+        ${isSelected ? "border-dashed border-[#9c9c9c] border-[3px]" : "border-none"} `}
+        ref={layerRef}
+        onClick={switchLayer}
+        onMouseDown={(e) => changePositionAbsolute(e)}
+        onMouseUp={(e) => changePositionStatic(e)}
+        onMouseMove={(e) => {moveDraggable(e)}}
 
 
-    >
-      <button onClick={changeHidden}>
-        {hidden ? 
-        (<Image src={"/closed-eye.png"} alt={'hidden'} width={25} height={25}/>) : 
-        (<Image src={"/open-eye.png"} alt={"unhidden"} width={25} height={25} />)}
-      </button>
-      <VSeparator />
-      <CanvasLayer />
-      <h1 className="text-[15px] text-white">{name}</h1>
-     
-    </div>
+      >
+        <button onClick={changeHidden}>
+          {hidden ? 
+          (<Image src={"/closed-eye.png"} alt={'hidden'} width={25} height={25}/>) : 
+          (<Image src={"/open-eye.png"} alt={"unhidden"} width={25} height={25} />)}
+        </button>
+        <VSeparator />
+        <CanvasLayer />
+        <h1 className="text-[15px] text-white">{name}</h1>
+      
+      </div>
+    </>
   )
 }
 
